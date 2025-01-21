@@ -1,11 +1,10 @@
-import './App.css'
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import router from "./routes/routes";
+import "./App.css";
+const App = () => {
+  const API_KEY = "ZPuxX_W7Yqznq29IU1rmTJ97DDvxJUKEBDYPdEy8gPAGp6A4Ag";
 
-function App() {
+  return <RouterProvider router={createBrowserRouter(router)} />;
+};
 
-
-  return (
-    <div>admin-panel avto</div>
-  )
-}
-
-export default App
+export default App;
