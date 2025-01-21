@@ -4,7 +4,7 @@ function App() {
 
 
   return (
-    <div>admin-panel</div>
+    <div>admin-panel avto</div>
   )
 }
 
