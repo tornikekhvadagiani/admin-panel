@@ -1,4 +1,5 @@
 import NavbarLayout from "../layouts/NavbarLayout";
+import CreateIngredient from "../pages/CreateIngredient/CreateIngredient";
 import CreateProducts from "../pages/CreateProducts/CreateProducts";
 import ManageProducts from "../pages/ManageProducts/ManageProducts";
 
@@ -17,7 +18,7 @@ const router = [
       },
       {
         path: "/CreateIngredient",
-        element: <CreateProducts />,
+        element: <CreateIngredient />,
       },
     ],
   },
