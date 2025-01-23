@@ -12,7 +12,11 @@ const router = [
         element: <ManageProducts />,
       },
       {
-        path: "/Create",
+        path: "/CreateCoffe",
+        element: <CreateProducts />,
+      },
+      {
+        path: "/CreateIngredient",
         element: <CreateProducts />,
       },
     ],

@@ -1,11 +1,10 @@
 .dashboard_flex {
   display: flex;
-  gap: 50px;
 }
 .nav {
   background-color: #111111;
   width: 350px;
-  height: 100dvh;
+  min-height: 100dvh;
   padding: 30px;
   color: white;
 }
@@ -14,27 +13,25 @@
   font-weight: 400;
   margin-bottom: 50px;
 }
-.links {
-}
-.links a {
+
+.link {
   text-decoration: none;
   color: #fff;
-}
-.link {
   display: flex;
   gap: 10px;
   cursor: pointer;
   border-radius: 5px;
   padding: 10px;
   margin-bottom: 10px;
-  transition: 0.2s;
+  transition: all 0.5s ease-in-out;
+  background-color: transparent;
 }
-.link:hover {
+/* .link:hover {
   background-color: rgba(128, 128, 128, 0.275);
 }
 .activeLink:hover {
   background-color: #598eda;
-}
+} */
 .activeLink {
   background-color: #598eda;
 }

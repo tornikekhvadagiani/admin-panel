@@ -1,22 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./Navbar.module.css";
-import coffe from "../images/icons/coffee.png";
 import { LinksAPI } from "../API/LinksAPI";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+
 const Links = () => {
-  const [activeLink, setActiveLink] = useState(0);
+  const currentLocation = useLocation();
+  const [activeLink, setActiveLink] = useState(null);
+
+  // Set the active link based on the current route
+  useEffect(() => {
+    const matchingLink = LinksAPI.find((e) => e.linkTo === currentLocation.pathname);
+    if (matchingLink) {
+      setActiveLink(matchingLink.id);
+    }
+  }, [currentLocation.pathname]);
+
   return (
     <div className={styles.links}>
-      {LinksAPI.map((e, index) => (
-        <Link to={e.linkTo} onClick={() => setActiveLink(index)}>
-          <div
-            className={`${styles.link} ${
-              activeLink === index ? styles.activeLink : ""
-            }`}
-          >
-            <img src={e.icon} alt={e.title} />
-            <h3>{e.title}</h3>
-          </div>
+      {LinksAPI.map((e) => (
+        <Link
+          className={`${styles.link} ${
+            activeLink === e.id ? styles.activeLink : ""
+          }`}
+          to={e.linkTo}
+          onClick={() => setActiveLink(e.id)}
+          key={e.id} // Use a stable key
+        >
+          <img src={e.icon} alt={e.title} />
+          <h3>{e.title}</h3>
         </Link>
       ))}
     </div>

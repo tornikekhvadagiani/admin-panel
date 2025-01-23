@@ -3,18 +3,21 @@ import ingredients from "../images/icons/ingredients.png";
 import main from "../images/icons/main.png";
 export const LinksAPI = [
   {
+    id: 0,
     icon: main,
     linkTo: "/",
     title: "Users Coffes",
   },
   {
+    id: 1,
     icon: coffe,
-    linkTo: "/Create",
+    linkTo: "/CreateCoffe",
     title: "Create Coffe",
   },
   {
+    id: 2,
     icon: ingredients,
-    linkTo: "/Create",
+    linkTo: "/CreateIngredient",
     title: "Create Ingredient",
   },
 ];
