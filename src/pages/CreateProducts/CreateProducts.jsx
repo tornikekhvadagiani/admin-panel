@@ -36,6 +36,8 @@ const CreateProducts = () => {
   const addCoffe = (e) => {
     e.preventDefault();
 
+    console.log(countryRef.current.value);
+
     if (
       !typeRef.current.value.trim() ||
       !coffePrice.length ||

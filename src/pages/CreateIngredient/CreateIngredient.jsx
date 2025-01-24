@@ -51,18 +51,18 @@ const CreateIngredient = () => {
   const addIngredient = (e) => {
     e.preventDefault();
 
-    // if (
-    //   !ingredientPrice.length ||
-    //   !strengthRef.current.value.trim() ||
-    //   !nameRef.current.value.trim() ||
-    //   !descriptionRef.current.value.trim() ||
-    //   !flavorRef.current.value.trim() ||
-    //   !creamRef.current.value.trim() ||
-    //   !countryRef.current.value.trim()
-    // ) {
-    //   alert("Please fill in all the fields.");
-    //   return;
-    // }
+    if (
+      !ingredientPrice.length ||
+      !strengthRef.current.value.trim() ||
+      !nameRef.current.value.trim() ||
+      !descriptionRef.current.value.trim() ||
+      !flavorRef.current.value.trim() ||
+      !creamRef.current.value.trim() ||
+      !countryRef.current.value.trim()
+    ) {
+      alert("Please fill in all the fields.");
+      return;
+    }
 
     const newTask = {
       ingredientName: nameRef.current.value,

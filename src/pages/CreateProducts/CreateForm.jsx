@@ -15,7 +15,6 @@ const CreateForm = ({
   descriptionRef,
   total_price,
   changeFlavor,
-  addMoreIngredient,
 }) => {
   return (
     <form className={styles.create_form}>
