@@ -6,7 +6,6 @@ const AddIngredients = () => {
   const closeIngredients = () => {
     context.setIngredientsPopup(false);
   };
-  console.log(context.ingredientsPopup);
 
   return (
     <div

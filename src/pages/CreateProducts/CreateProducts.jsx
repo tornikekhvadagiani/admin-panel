@@ -1,15 +1,18 @@
-import React, { useRef } from "react";
+import { useRef, useState } from "react";
 import styles from "./CreateProducts.module.css";
-import BlueButton from "../../components/BlueButton";
 import { useNavigate } from "react-router-dom";
-import CountrySelect from "../../components/CountrySelect";
-import FlavorSelect from "../../components/FlavorSelect";
 import AddIngredients from "../../components/AddIngredients";
 import { useMyContext } from "../../context/Context";
+import CreateForm from "./CreateForm";
+import { useEffect } from "react";
 
 const CreateProducts = () => {
+  const [coffePrice, setCoffePrice] = useState(null);
+  const [coffePriceInfo, setCoffePriceInfo] = useState([
+    { type: "default", title: "Coffe Price", price: coffePrice },
+    { type: "createFlavor", title: "Vanilla", price: 0.75 },
+  ]);
   const typeRef = useRef(null);
-  const priceRef = useRef(null);
   const sugarRef = useRef(null);
   const coffeineRef = useRef(null);
   const descriptionRef = useRef(null);
@@ -17,12 +20,22 @@ const CreateProducts = () => {
   const flavorRef = useRef(null);
   const navigate = useNavigate();
   const context = useMyContext();
+  const { API_KEY, API_URL } = useMyContext();
+  const [totalPrice, setTotalPrice] = useState(0);
+  useEffect(() => {
+    let totalPrice = 0;
+    coffePriceInfo?.map((e) => (totalPrice += e.price));
+    setTotalPrice((totalPrice + Number(coffePrice)).toFixed(2));
+  }, [coffePrice, coffePriceInfo]);
+
+  const addMoreIngredient = () => {};
+
   const addCoffe = (e) => {
     e.preventDefault();
 
     if (
       !typeRef.current.value.trim() ||
-      !priceRef.current.value.trim() ||
+      !coffePrice.length ||
       !sugarRef.current.value.trim() ||
       !coffeineRef.current.value.trim() ||
       !descriptionRef.current.value.trim() ||
@@ -35,7 +48,7 @@ const CreateProducts = () => {
 
     const newTask = {
       coffeType: typeRef.current.value,
-      coffePrice: priceRef.current.value, // დოლარი //
+      coffePrice: coffePrice, // დოლარი //
       coffeSugar: sugarRef.current.value, // გრამობითაა //
       coffeine: coffeineRef.current.value,
       coffeDescription: descriptionRef.current.value,
@@ -65,6 +78,14 @@ const CreateProducts = () => {
     e.preventDefault();
     context.setIngredientsPopup(true);
   };
+  const changeFlavor = (newFlavor) => {
+    const removeCurrentFlavor = coffePriceInfo.filter(
+      (e) => e.type !== "createFlavor"
+    );
+    console.log([...removeCurrentFlavor, newFlavor]);
+
+    setCoffePriceInfo([...removeCurrentFlavor, newFlavor]);
+  };
 
   return (
     <div className={styles.create_main}>
@@ -72,60 +93,21 @@ const CreateProducts = () => {
       <div className={styles.add_product_main}>
         <h1>Add Product</h1>
         <div className={styles.create_div_container}>
-          <form className={styles.create_form}>
-            <div className={styles.inputs_flex}>
-              <div className={styles.flex_div}>
-                <label>
-                  <h2>Coffe Type</h2>
-                  <select name="coffee" ref={typeRef}>
-                    <option value="Espresso">Espresso</option>
-                    <option value="Americano">Americano</option>
-                    <option value="Latte">Latte</option>
-                    <option value="Cappuccino">Cappuccino</option>
-                    <option value="Mocha">Mocha</option>
-                    <option value="Macchiato">Macchiato</option>
-                    <option value="Flat_White">Flat White</option>
-                    <option value="Irish">Irish Coffee</option>
-                    <option value="Affogato">Affogato</option>
-                    <option value="Turkish">Turkish Coffee</option>
-                  </select>
-                </label>
-                <label>
-                  <h2>Coffe Price</h2>
-                  <input type="number" ref={priceRef} />
-                </label>
-                <label>
-                  <h2>Coffeine</h2>
-                  <input type="text" ref={coffeineRef} />
-                </label>
-              </div>
-              <div className={styles.flex_div}>
-                <label>
-                  <h2>Sugar (gr) </h2>
-                  <input type="number" ref={sugarRef} />
-                </label>
-                <label className={styles.textarea_label}>
-                  <h2>Description </h2>
-                  <textarea ref={descriptionRef} />
-                </label>
-              </div>
-            </div>
-            <div className={styles.info_bottom_flex}>
-              <label>
-                <h2>Select Country</h2>
-                <CountrySelect ref={countryRef} />
-              </label>
-              <label>
-                <h2>Select Flavor</h2>
-                <FlavorSelect ref={flavorRef} />
-              </label>
-            </div>
-
-            <div className={styles.add_button}>
-              <BlueButton title={"Add Ingredients"} func={openIngredients} />
-              <BlueButton title={"Add Coffe"} func={addCoffe} />
-            </div>
-          </form>
+          <CreateForm
+            addCoffe={addCoffe}
+            openIngredients={openIngredients}
+            typeRef={typeRef}
+            coffePrice={coffePrice}
+            setCoffePrice={setCoffePrice}
+            coffeineRef={coffeineRef}
+            sugarRef={sugarRef}
+            countryRef={countryRef}
+            flavorRef={flavorRef}
+            descriptionRef={descriptionRef}
+            total_price={totalPrice}
+            addMoreIngredient={addMoreIngredient}
+            changeFlavor={changeFlavor}
+          />
         </div>
       </div>
     </div>
