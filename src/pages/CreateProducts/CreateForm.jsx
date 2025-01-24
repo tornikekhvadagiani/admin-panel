@@ -42,6 +42,7 @@ const CreateForm = ({
               type="number"
               value={coffePrice || ""}
               onChange={(e) => setCoffePrice(e.target.value)}
+              min={0}
             />
           </label>
           <label>
@@ -52,7 +53,7 @@ const CreateForm = ({
         <div className={styles.flex_div}>
           <label>
             <h2>Sugar (gr) </h2>
-            <input type="number" ref={sugarRef} />
+            <input type="number" min={0} ref={sugarRef} />
           </label>
           <label className={styles.textarea_label}>
             <h2>Description </h2>

@@ -1,8 +1,14 @@
-import React, { forwardRef, useState } from "react";
+import React, { forwardRef, useState, useEffect } from "react";
 import { FlavorAPI } from "../API/FlavorAPI";
-import randn from "randn";
-const FlavorSelect = forwardRef(({ changeFlavor, ...props }, ref) => {
-  const [selectedValue, setSelectedValue] = useState(FlavorAPI[0]?.title || "");
+
+const FlavorSelectIngredient = forwardRef(({ changeFlavor }, ref) => {
+  const [selectedValue, setSelectedValue] = useState("");
+
+  useEffect(() => {
+    if (FlavorAPI.length > 0) {
+      setSelectedValue(FlavorAPI[0].title);
+    }
+  }, []);
 
   const handleChange = (e) => {
     const selectedOption = FlavorAPI.find(
@@ -10,9 +16,9 @@ const FlavorSelect = forwardRef(({ changeFlavor, ...props }, ref) => {
     );
 
     if (selectedOption) {
-      selectedOption.type = "createFlavor";
-      changeFlavor(selectedOption);
+      const updatedFlavor = { ...selectedOption, type: "Flavor" };
       setSelectedValue(selectedOption.title);
+      changeFlavor(updatedFlavor);
     }
   };
 
@@ -23,10 +29,9 @@ const FlavorSelect = forwardRef(({ changeFlavor, ...props }, ref) => {
       ref={ref}
       value={selectedValue}
       onChange={handleChange}
-      {...props}
     >
       {FlavorAPI.map((e) => (
-        <option value={e.title} key={randn()}>
+        <option value={e.title} key={e.title}>
           {e.title} - {e.price}$
         </option>
       ))}
@@ -34,4 +39,4 @@ const FlavorSelect = forwardRef(({ changeFlavor, ...props }, ref) => {
   );
 });
 
-export default FlavorSelect;
+export default FlavorSelectIngredient;

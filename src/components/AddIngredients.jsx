@@ -1,16 +1,47 @@
 import styles from "./Components.module.css";
 import { useMyContext } from "../context/Context";
+import { useState } from "react";
+import { useEffect } from "react";
 const AddIngredients = () => {
-  const context = useMyContext();
-
+  const {
+    API_INGREDIENTS_KEY,
+    API_URL,
+    ingredientsPopup,
+    setIngredientsPopup,
+  } = useMyContext();
   const closeIngredients = () => {
-    context.setIngredientsPopup(false);
+    setIngredientsPopup(false);
   };
+
+  const [ingredientsData, setIngredientsData] = useState(null);
+  const getIngredientsInfo = () => {
+    fetch(`${API_URL}/ingredients`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${API_INGREDIENTS_KEY}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setIngredientsData(data.items);
+      })
+      .catch((error) => console.error("Error:", error));
+  };
+  useEffect(() => {
+    getIngredientsInfo();
+  }, []);
+  console.log(ingredientsData);
 
   return (
     <div
       className={`${styles.ingredients_main} ${
-        context.ingredientsPopup ? `${styles.active}` : ""
+        ingredientsPopup ? `${styles.active}` : ""
       }`}
     >
       <div className={styles.add_ingredients_box}>

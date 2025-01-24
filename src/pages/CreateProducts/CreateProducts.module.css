@@ -64,6 +64,7 @@
 .create_form .info_bottom_flex label {
   width: 100%;
 }
+
 .create_form .total_price {
   display: flex;
   justify-content: end;
@@ -71,5 +72,15 @@
   margin-bottom: 10px;
 }
 .create_form .total_price .price {
+  color: limegreen;
+}
+
+.create_form .total_price_ingredient {
+  display: flex;
+  justify-content: end;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+.total_price_ingredient {
   color: limegreen;
 }

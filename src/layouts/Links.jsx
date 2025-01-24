@@ -2,17 +2,22 @@ import React, { useState, useEffect } from "react";
 import styles from "./Navbar.module.css";
 import { LinksAPI } from "../API/LinksAPI";
 import { Link, useLocation } from "react-router-dom";
+import { useMyContext } from "../context/Context";
 
 const Links = () => {
+  const { setIngredientsPopup } = useMyContext();
   const currentLocation = useLocation();
   const [activeLink, setActiveLink] = useState(null);
 
   // Set the active link based on the current route
   useEffect(() => {
-    const matchingLink = LinksAPI.find((e) => e.linkTo === currentLocation.pathname);
+    const matchingLink = LinksAPI.find(
+      (e) => e.linkTo === currentLocation.pathname
+    );
     if (matchingLink) {
       setActiveLink(matchingLink.id);
     }
+    setIngredientsPopup(false);
   }, [currentLocation.pathname]);
 
   return (

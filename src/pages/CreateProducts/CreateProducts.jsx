@@ -8,10 +8,12 @@ import { useEffect } from "react";
 
 const CreateProducts = () => {
   const [coffePrice, setCoffePrice] = useState(null);
+
   const [coffePriceInfo, setCoffePriceInfo] = useState([
     { type: "default", title: "Coffe Price", price: coffePrice },
     { type: "createFlavor", title: "Vanilla", price: 0.75 },
   ]);
+
   const typeRef = useRef(null);
   const sugarRef = useRef(null);
   const coffeineRef = useRef(null);
@@ -20,8 +22,9 @@ const CreateProducts = () => {
   const flavorRef = useRef(null);
   const navigate = useNavigate();
   const context = useMyContext();
-  const { API_KEY, API_URL } = useMyContext();
+  const { API_COFFE_KEY, API_URL } = useMyContext();
   const [totalPrice, setTotalPrice] = useState(0);
+
   useEffect(() => {
     let totalPrice = 0;
     coffePriceInfo?.map((e) => (totalPrice += e.price));
@@ -58,7 +61,7 @@ const CreateProducts = () => {
     fetch(`${API_URL}/coffe`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${API_KEY}`,
+        Authorization: `Bearer ${API_COFFE_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify([newTask]), // Ensure correct JSON format
@@ -89,7 +92,7 @@ const CreateProducts = () => {
 
   return (
     <div className={styles.create_main}>
-      <AddIngredients />
+      {context.ingredientsPopup && <AddIngredients />}
       <div className={styles.add_product_main}>
         <h1>Add Product</h1>
         <div className={styles.create_div_container}>
