@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import styles from "../CreateProducts/CreateProducts.module.css";
+import styles from "../CreateCoffe/CreateProducts.module.css";
 
 import { FlavorAPI } from "../../API/FlavorAPI";
 import { CreamsAPI } from "../../API/CreamsAPI";
@@ -7,6 +7,7 @@ import { useMyContext } from "../../context/Context";
 import { useNavigate, useParams } from "react-router-dom";
 import { InfinitySpin } from "react-loader-spinner";
 import IngredientForm from "./IngredientForm";
+import { convertToGel } from "../../components/convertToGel";
 
 const CreateIngredient = () => {
   const nameRef = useRef(null);
@@ -87,17 +88,19 @@ const CreateIngredient = () => {
     );
     setIngredientPriceInfo([...removeOldCream, e]);
   };
+
   useEffect(() => {
     let totalPrice = 0;
-    ingredientPriceInfo?.map((e) => (totalPrice += e.price));
-    setTotalPrice((totalPrice + Number(ingredientPrice)).toFixed(2));
+    ingredientPriceInfo.forEach((e) => (totalPrice += e.price));
+    const validIngredientPrice = Number(ingredientPrice) || 0;
+    setTotalPrice((totalPrice + validIngredientPrice).toFixed(2));
   }, [ingredientPrice, ingredientPriceInfo]);
 
-  const addIngredient = (e) => {
+  const addIngredient = async (e) => {
     e.preventDefault();
 
     if (
-      !ingredientPrice.length ||
+      !ingredientPrice?.length ||
       !strengthRef.current.value.trim() ||
       !nameRef.current.value.trim() ||
       !descriptionRef.current.value.trim() ||
@@ -108,18 +111,24 @@ const CreateIngredient = () => {
       alert("Please fill in all the fields.");
       return;
     }
-
+    const gelAmount = await convertToGel(Number(totalPrice));
+    if (gelAmount !== 0 && !gelAmount) {
+      console.error("Failed to convert currency.");
+      return;
+    }
     const newTask = {
       ingredientName: nameRef.current.value,
       ingredientCream: creamRef.current.value,
+      ingredientGelPrice: gelAmount, // დოლარი //
       ingredientPrice: totalPrice, // დოლარი //
       ingredientDescription: descriptionRef.current.value,
       ingredientCountry: countryRef.current.value,
       ingredientFlavor: flavorRef.current.value,
       ingredientStrength: strengthRef.current.value,
     };
+
     fetch(`${API_URL}/${id ? `ingredients/${id}` : "ingredients"}`, {
-      method: `${id ? "PUT" : "POST"}`,
+      method: id ? "PUT" : "POST",
       headers: {
         Authorization: `Bearer ${API_INGREDIENTS_KEY}`,
         "Content-Type": "application/json",
@@ -133,7 +142,7 @@ const CreateIngredient = () => {
         return response.json(); // Return JSON data
       })
       .then(() => {
-        navigate("/");
+        navigate("/Products/ingredients");
       })
       .catch((error) => console.error("Error:", error));
   };

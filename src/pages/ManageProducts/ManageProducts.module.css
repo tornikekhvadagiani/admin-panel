@@ -80,3 +80,7 @@
   width: 650px;
   height: 650px;
 }
+.price p {
+  cursor: pointer;
+  text-decoration: underline;
+}

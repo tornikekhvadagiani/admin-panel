@@ -5,8 +5,8 @@ export const LinksAPI = [
   {
     id: 0,
     icon: main,
-    linkTo: "/",
-    title: "Users Coffes",
+    linkTo: "/Products/coffe",
+    title: "My Products",
   },
   {
     id: 1,

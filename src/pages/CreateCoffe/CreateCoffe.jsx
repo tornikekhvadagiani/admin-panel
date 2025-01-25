@@ -6,10 +6,10 @@ import { useMyContext } from "../../context/Context";
 import CreateForm from "./CreateForm";
 import { useEffect } from "react";
 import { InfinitySpin } from "react-loader-spinner";
+import { convertToGel } from "../../components/convertToGel";
 
-const CreateProducts = () => {
-  const [coffePrice, setCoffePrice] = useState(null);
-
+const CreateCoffe = () => {
+  const [coffePrice, setCoffePrice] = useState(0);
   const [coffePriceInfo, setCoffePriceInfo] = useState([
     { type: "default", title: "Coffe Price", price: coffePrice },
     { type: "createFlavor", title: "Vanilla", price: 0.75 },
@@ -31,19 +31,19 @@ const CreateProducts = () => {
 
   useEffect(() => {
     let totalPrice = 0;
-    coffePriceInfo?.map((e) => (totalPrice += e.price));
-    setTotalPrice((totalPrice + Number(coffePrice)).toFixed(2));
+    coffePriceInfo.forEach((e) => (totalPrice += e.price));
+    const validCoffePrice = Number(coffePrice) || 0;
+    setTotalPrice((totalPrice + validCoffePrice).toFixed(2));
   }, [coffePrice, coffePriceInfo]);
 
   const addMoreIngredient = () => {};
 
-  const addCoffe = (e) => {
+  const addCoffe = async (e) => {
     e.preventDefault();
-    console.log(countryRef.current.value);
 
     if (
       !typeRef.current.value.trim() ||
-      !coffePrice.length ||
+      !coffePrice ||
       !sugarRef.current.value.trim() ||
       !coffeineRef.current.value.trim() ||
       !descriptionRef.current.value.trim() ||
@@ -54,17 +54,26 @@ const CreateProducts = () => {
       return;
     }
 
+    const gelAmount = await convertToGel(Number(coffePrice));
+
+    if (gelAmount !== 0 && !gelAmount) {
+      console.error("Failed to convert currency.");
+      return;
+    }
+
+    // Proceed with the newTask
     const newTask = {
       coffeType: typeRef.current.value,
-      coffePrice: coffePrice, // დოლარი //
-      coffeSugar: sugarRef.current.value, // გრამობითაა //
+      coffePrice: coffePrice, // Dollar price
+      coffeGelPrice: gelAmount, // GEL price
+      coffeSugar: sugarRef.current.value,
       coffeine: coffeineRef.current.value,
       coffeDescription: descriptionRef.current.value,
       coffeCountry: countryRef.current.value,
       coffeFlavor: flavorRef.current.value,
     };
     fetch(`${API_URL}/${currentData ? `coffe/${id}` : "coffe"}`, {
-      method: `${currentData}` ? "PUT" : "POST",
+      method: currentData ? "PUT" : "POST",
       headers: {
         Authorization: `Bearer ${API_COFFE_KEY}`,
         "Content-Type": "application/json",
@@ -75,13 +84,16 @@ const CreateProducts = () => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        return response.json(); // Return JSON data
+        return response.json(); // Process response
       })
-      .then((data) => {
-        navigate("/");
+      .then(() => {
+        navigate("/Products/coffe");
       })
-      .catch((error) => console.error("Error:", error));
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
+
   const openIngredients = (e) => {
     e.preventDefault();
     context.setIngredientsPopup(true);
@@ -136,7 +148,6 @@ const CreateProducts = () => {
     const removeCurrentFlavor = coffePriceInfo.filter(
       (e) => e.type !== "createFlavor"
     );
-    console.log([...removeCurrentFlavor, newFlavor]);
 
     setCoffePriceInfo([...removeCurrentFlavor, newFlavor]);
   };
@@ -145,7 +156,7 @@ const CreateProducts = () => {
     <div className={styles.create_main}>
       {context.ingredientsPopup && <AddIngredients />}
       <div className={styles.add_product_main}>
-        <h1>Add Product</h1>
+        <h1>{id ? "Edit Coffe" : "Add Coffe"}</h1>
         <div className={styles.create_div_container}>
           {isLoaded ? (
             <CreateForm
@@ -176,4 +187,4 @@ const CreateProducts = () => {
   );
 };
 
-export default CreateProducts;
+export default CreateCoffe;

@@ -2,7 +2,7 @@ import CountrySelect from "../../components/CountrySelect";
 import CreamSelect from "../../components/CreamSelect";
 import BlueButton from "../../components/BlueButton";
 import FlavorSelectIngredient from "../../components/FlavorSelectIngredient";
-import styles from "../CreateProducts/CreateProducts.module.css";
+import styles from "../CreateCoffe/CreateProducts.module.css";
 import { useMyContext } from "../../context/Context";
 import { useNavigate } from "react-router-dom";
 
@@ -39,7 +39,7 @@ const IngredientForm = ({
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        navigate("/");
+        navigate("/Products/ingredients");
       })
       .catch((error) => {
         console.error("Error:", error);

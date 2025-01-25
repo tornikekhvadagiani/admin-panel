@@ -9,15 +9,15 @@ const Links = () => {
   const currentLocation = useLocation();
   const [activeLink, setActiveLink] = useState(null);
 
-  // Set the active link based on the current route
   useEffect(() => {
-    const matchingLink = LinksAPI.find(
-      (e) => e.linkTo === currentLocation.pathname
+    const matchingLink = LinksAPI.find((e) =>
+      currentLocation.pathname.includes(e.linkTo)
     );
     if (matchingLink) {
       setActiveLink(matchingLink.id);
     }
     setIngredientsPopup(false);
+    window.scrollTo(0, 0);
   }, [currentLocation.pathname]);
 
   return (
@@ -29,7 +29,7 @@ const Links = () => {
           }`}
           to={e.linkTo}
           onClick={() => setActiveLink(e.id)}
-          key={e.id} // Use a stable key
+          key={e.id}
         >
           <img src={e.icon} alt={e.title} />
           <h3>{e.title}</h3>

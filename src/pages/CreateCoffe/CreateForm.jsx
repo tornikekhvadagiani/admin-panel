@@ -37,7 +37,7 @@ const CreateForm = ({
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        navigate("/");
+        navigate("/Products/coffe");
       })
       .catch((error) => {
         console.error("Error:", error);

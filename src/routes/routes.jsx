@@ -1,6 +1,6 @@
 import NavbarLayout from "../layouts/NavbarLayout";
 import CreateIngredient from "../pages/CreateIngredient/CreateIngredient";
-import CreateProducts from "../pages/CreateProducts/CreateProducts";
+import CreateCoffe from "../pages/CreateCoffe/CreateCoffe";
 import ManageProducts from "../pages/ManageProducts/ManageProducts";
 
 const router = [
@@ -9,12 +9,17 @@ const router = [
     element: <NavbarLayout />,
     children: [
       {
+        path: "/Products",
         index: true,
         element: <ManageProducts />,
       },
       {
+        path: "/Products/:pathFetchType",
+        element: <ManageProducts />,
+      },
+      {
         path: "/CreateCoffe",
-        element: <CreateProducts />,
+        element: <CreateCoffe />,
       },
       {
         path: "/CreateIngredient",
@@ -26,7 +31,7 @@ const router = [
       },
       {
         path: "/CreateCoffe/:id",
-        element: <CreateProducts />,
+        element: <CreateCoffe />,
       },
     ],
   },
