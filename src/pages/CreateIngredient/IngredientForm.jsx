@@ -72,7 +72,7 @@ const IngredientForm = ({
             <input
               type="text"
               ref={strengthRef}
-              defaultValue={currentData ? currentData.strength : ""}
+              defaultValue={currentData ? currentData?.strength : ""}
             />
           </label>
         </div>
@@ -90,7 +90,7 @@ const IngredientForm = ({
             <h2>Description </h2>
             <textarea
               ref={descriptionRef}
-              defaultValue={currentData ? currentData.description : ""}
+              defaultValue={currentData ? currentData?.description : ""}
             />
           </label>
         </div>

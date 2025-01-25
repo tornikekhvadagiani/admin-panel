@@ -162,7 +162,6 @@ const CreateIngredient = () => {
             />
           ) : (
             <div className={styles.loader}>
-              {" "}
               <InfinitySpin color="royalblue" />
             </div>
           )}

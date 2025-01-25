@@ -2,6 +2,9 @@ import styles from "./CreateProducts.module.css";
 import CountrySelect from "../../components/CountrySelect";
 import FlavorSelect from "../../components/FlavorSelect";
 import BlueButton from "../../components/BlueButton";
+import TypeSelect from "../../components/TypeSelect";
+import { useMyContext } from "../../context/Context";
+import { useNavigate } from "react-router-dom";
 const CreateForm = ({
   addCoffe,
   openIngredients,
@@ -15,25 +18,42 @@ const CreateForm = ({
   descriptionRef,
   total_price,
   changeFlavor,
+  currentData,
+  id,
 }) => {
+  const { API_URL, API_COFFE_KEY } = useMyContext();
+  const navigate = useNavigate();
+  const deleteCoffe = (e) => {
+    e.preventDefault();
+
+    fetch(`${API_URL}/coffe/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${API_COFFE_KEY}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        navigate("/");
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
   return (
     <form className={styles.create_form}>
       <div className={styles.inputs_flex}>
         <div className={styles.flex_div}>
           <label>
             <h2>Coffe Type</h2>
-            <select name="coffee" ref={typeRef}>
-              <option value="Espresso">Espresso</option>
-              <option value="Americano">Americano</option>
-              <option value="Latte">Latte</option>
-              <option value="Cappuccino">Cappuccino</option>
-              <option value="Mocha">Mocha</option>
-              <option value="Macchiato">Macchiato</option>
-              <option value="Flat_White">Flat White</option>
-              <option value="Irish">Irish Coffee</option>
-              <option value="Affogato">Affogato</option>
-              <option value="Turkish">Turkish Coffee</option>
-            </select>
+            <TypeSelect
+              ref={typeRef}
+              isEditing={currentData}
+              editTypeValue={currentData?.type}
+            />
           </label>
           <label>
             <h2>Coffe Price</h2>
@@ -46,17 +66,29 @@ const CreateForm = ({
           </label>
           <label>
             <h2>Coffeine</h2>
-            <input type="text" ref={coffeineRef} />
+            <input
+              type="text"
+              ref={coffeineRef}
+              defaultValue={currentData ? currentData?.coffeine : ""}
+            />
           </label>
         </div>
         <div className={styles.flex_div}>
           <label>
             <h2>Sugar (gr) </h2>
-            <input type="number" min={0} ref={sugarRef} />
+            <input
+              type="number"
+              min={0}
+              ref={sugarRef}
+              defaultValue={currentData ? currentData?.sugar : ""}
+            />
           </label>
           <label className={styles.textarea_label}>
             <h2>Description </h2>
-            <textarea ref={descriptionRef} />
+            <textarea
+              ref={descriptionRef}
+              defaultValue={currentData ? currentData?.description : ""}
+            />
           </label>
         </div>
       </div>
@@ -64,11 +96,20 @@ const CreateForm = ({
       <div className={styles.info_bottom_flex}>
         <label>
           <h2>Select Country</h2>
-          <CountrySelect ref={countryRef} />
+          <CountrySelect
+            ref={countryRef}
+            isEditing={currentData}
+            editCountryValue={currentData?.country}
+          />
         </label>
         <label>
           <h2>Select Flavor</h2>
-          <FlavorSelect ref={flavorRef} changeFlavor={changeFlavor} />
+          <FlavorSelect
+            ref={flavorRef}
+            changeFlavor={changeFlavor}
+            isEditing={currentData}
+            editFlavorValue={currentData?.flavor}
+          />
         </label>
       </div>
       <div className={styles.total_price}>
@@ -77,8 +118,18 @@ const CreateForm = ({
       </div>
 
       <div className={styles.add_button}>
-        <BlueButton title={"Add Ingredients"} func={openIngredients} />
-        <BlueButton title={"Add Coffe"} func={addCoffe} />
+        <BlueButton
+          title={currentData ? "Finish Coffe" : "Add Coffe"}
+          func={addCoffe}
+        />
+        <BlueButton
+          title={currentData ? "Edit More Ingredients" : "Add Ingredients"}
+          func={openIngredients}
+        />
+
+        {currentData && (
+          <BlueButton title={"Delete Coffe"} func={deleteCoffe} />
+        )}
       </div>
     </form>
   );

@@ -5,6 +5,7 @@ import AddIngredients from "../../components/AddIngredients";
 import { useMyContext } from "../../context/Context";
 import CreateForm from "./CreateForm";
 import { useEffect } from "react";
+import { InfinitySpin } from "react-loader-spinner";
 
 const CreateProducts = () => {
   const [coffePrice, setCoffePrice] = useState(null);
@@ -26,6 +27,7 @@ const CreateProducts = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const { id } = useParams();
   const [currentData, setCurrentData] = useState();
+  const [isLoaded, setIsLoaded] = useState(id ? false : true);
 
   useEffect(() => {
     let totalPrice = 0;
@@ -37,7 +39,6 @@ const CreateProducts = () => {
 
   const addCoffe = (e) => {
     e.preventDefault();
-
     console.log(countryRef.current.value);
 
     if (
@@ -62,13 +63,13 @@ const CreateProducts = () => {
       coffeCountry: countryRef.current.value,
       coffeFlavor: flavorRef.current.value,
     };
-    fetch(`${API_URL}/coffe`, {
-      method: "POST",
+    fetch(`${API_URL}/${currentData ? `coffe/${id}` : "coffe"}`, {
+      method: `${currentData}` ? "PUT" : "POST",
       headers: {
         Authorization: `Bearer ${API_COFFE_KEY}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify([newTask]), // Ensure correct JSON format
+      body: JSON.stringify(id ? newTask : [newTask]),
     })
       .then((response) => {
         if (!response.ok) {
@@ -85,6 +86,52 @@ const CreateProducts = () => {
     e.preventDefault();
     context.setIngredientsPopup(true);
   };
+  const getCorrectInfo = () => {
+    fetch(`${API_URL}/coffe`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${API_COFFE_KEY}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        return response.json();
+      })
+      .then((data) => {
+        const coffeInfo = data.items.map(
+          ({
+            _uuid,
+            coffeType,
+            coffeCountry,
+            coffeine,
+            coffeDescription,
+            coffeFlavor,
+            coffePrice,
+            coffeSugar,
+          }) => ({
+            uuid: _uuid,
+            type: coffeType,
+            country: coffeCountry,
+            coffeine: coffeine,
+            description: coffeDescription,
+            flavor: coffeFlavor,
+            price: coffePrice,
+            sugar: coffeSugar,
+          })
+        );
+        let correctObj = coffeInfo.find((e) => e.uuid === id);
+        setCurrentData(correctObj);
+        setCoffePrice(correctObj?.price);
+      })
+      .finally(() => setIsLoaded(true));
+  };
+  useEffect(() => {
+    getCorrectInfo();
+  }, []);
   const changeFlavor = (newFlavor) => {
     const removeCurrentFlavor = coffePriceInfo.filter(
       (e) => e.type !== "createFlavor"
@@ -100,21 +147,29 @@ const CreateProducts = () => {
       <div className={styles.add_product_main}>
         <h1>Add Product</h1>
         <div className={styles.create_div_container}>
-          <CreateForm
-            addCoffe={addCoffe}
-            openIngredients={openIngredients}
-            typeRef={typeRef}
-            coffePrice={coffePrice}
-            setCoffePrice={setCoffePrice}
-            coffeineRef={coffeineRef}
-            sugarRef={sugarRef}
-            countryRef={countryRef}
-            flavorRef={flavorRef}
-            descriptionRef={descriptionRef}
-            total_price={totalPrice}
-            addMoreIngredient={addMoreIngredient}
-            changeFlavor={changeFlavor}
-          />
+          {isLoaded ? (
+            <CreateForm
+              addCoffe={addCoffe}
+              openIngredients={openIngredients}
+              typeRef={typeRef}
+              coffePrice={coffePrice}
+              setCoffePrice={setCoffePrice}
+              coffeineRef={coffeineRef}
+              sugarRef={sugarRef}
+              countryRef={countryRef}
+              flavorRef={flavorRef}
+              descriptionRef={descriptionRef}
+              total_price={totalPrice}
+              addMoreIngredient={addMoreIngredient}
+              changeFlavor={changeFlavor}
+              currentData={currentData}
+              id={id}
+            />
+          ) : (
+            <div className={styles.loader}>
+              <InfinitySpin color="royalblue" />
+            </div>
+          )}
         </div>
       </div>
     </div>
