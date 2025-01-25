@@ -20,6 +20,14 @@ const router = [
         path: "/CreateIngredient",
         element: <CreateIngredient />,
       },
+      {
+        path: "/CreateIngredient/:id",
+        element: <CreateIngredient />,
+      },
+      {
+        path: "/CreateCoffe/:id",
+        element: <CreateProducts />,
+      },
     ],
   },
 ];

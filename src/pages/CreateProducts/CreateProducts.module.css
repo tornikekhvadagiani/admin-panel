@@ -84,3 +84,13 @@
 .total_price_ingredient {
   color: limegreen;
 }
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50dvh;
+}
+.loader svg {
+  width: 650px;
+  height: 650px;
+}

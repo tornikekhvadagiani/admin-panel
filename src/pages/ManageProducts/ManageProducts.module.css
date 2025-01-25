@@ -48,9 +48,11 @@
   right: 65px;
   top: 50%;
   transform: translateY(-50%);
-
   cursor: pointer;
   text-decoration: underline;
+}
+.edit a {
+  color: black;
 }
 .index {
   position: absolute;

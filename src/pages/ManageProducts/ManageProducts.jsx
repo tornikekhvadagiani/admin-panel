@@ -6,6 +6,7 @@ import { InfinitySpin } from "react-loader-spinner";
 
 import randn from "randn";
 import InfoType from "./infoType";
+import { Link } from "react-router-dom";
 const ManageProducts = () => {
   const [data, setData] = useState(null);
   const { API_URL, API_INGREDIENTS_KEY, API_COFFE_KEY } = useMyContext();
@@ -17,7 +18,9 @@ const ManageProducts = () => {
     fetch(`${API_URL}/${fetchType}`, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${API_INGREDIENTS_KEY}`,
+        Authorization: `Bearer ${
+          fetchType === "ingredients" ? API_INGREDIENTS_KEY : API_COFFE_KEY
+        }`,
         "Content-Type": "application/json",
       },
     })
@@ -29,8 +32,6 @@ const ManageProducts = () => {
         return response.json();
       })
       .then((data) => {
-        console.log(data.items);
-
         const ingredientInfo = data.items.map(
           ({
             _uuid,
@@ -106,8 +107,20 @@ const ManageProducts = () => {
                     coffeValue={"Coffe Type"}
                   />
                 </div>
-                <div className={styles.option}>Ingredient Country</div>
-                <div className={styles.option}>Ingredient Flavor</div>
+                <div className={styles.option}>
+                  <InfoType
+                    fetchType={fetchType}
+                    ingredientValue={"Ingredient Country"}
+                    coffeValue={"Coffe Country"}
+                  />
+                </div>
+                <div className={styles.option}>
+                  <InfoType
+                    fetchType={fetchType}
+                    ingredientValue={"Ingredient Flavor"}
+                    coffeValue={"Coffe Flavor"}
+                  />
+                </div>
                 <div className={styles.option}>
                   {" "}
                   <InfoType
@@ -116,7 +129,13 @@ const ManageProducts = () => {
                     coffeValue={"Coffeine"}
                   />
                 </div>
-                <div className={styles.option}>Ingredient Price</div>
+                <div className={styles.option}>
+                  <InfoType
+                    fetchType={fetchType}
+                    ingredientValue={"Ingredient Price"}
+                    coffeValue={"Coffe Price"}
+                  />
+                </div>
               </div>
 
               {data?.map((e, i) => (
@@ -141,8 +160,18 @@ const ManageProducts = () => {
                   <div className={styles.option} style={{ color: "limegreen" }}>
                     {data[i].price}$
                   </div>
-                  <div className={styles.edit}>Edit</div>
-                  <div className={styles.index}>{i}</div>
+                  <div className={styles.edit}>
+                    <Link
+                      to={`/${
+                        fetchType == "ingredients"
+                          ? "CreateIngredient"
+                          : "CreateCoffe"
+                      }/${e.uuid}`}
+                    >
+                      Edit
+                    </Link>
+                  </div>
+                  <div className={styles.index}>{i + 1}</div>
                 </div>
               ))}
             </div>

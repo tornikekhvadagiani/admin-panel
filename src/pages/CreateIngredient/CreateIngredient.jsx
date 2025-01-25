@@ -1,17 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "../CreateProducts/CreateProducts.module.css";
-import CountrySelect from "../../components/CountrySelect";
-import CreamSelect from "../../components/CreamSelect";
-import BlueButton from "../../components/BlueButton";
-import FlavorSelectIngredient from "../../components/FlavorSelectIngredient";
+
 import { FlavorAPI } from "../../API/FlavorAPI";
 import { CreamsAPI } from "../../API/CreamsAPI";
 import { useMyContext } from "../../context/Context";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { InfinitySpin } from "react-loader-spinner";
+import IngredientForm from "./IngredientForm";
+
 const CreateIngredient = () => {
-  const priceRef = useRef(null);
   const nameRef = useRef(null);
-  const coffeineRef = useRef(null);
   const strengthRef = useRef(null);
   const descriptionRef = useRef(null);
   const countryRef = useRef(null);
@@ -20,6 +18,57 @@ const CreateIngredient = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [ingredientPrice, setIngredientPrice] = useState(totalPrice);
   const { API_INGREDIENTS_KEY, API_URL } = useMyContext();
+  const { id } = useParams();
+  const [currentData, setCurrentData] = useState();
+  const [isLoaded, setIsLoaded] = useState(id ? false : true);
+
+  const getCorrectInfo = () => {
+    fetch(`${API_URL}/ingredients`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${API_INGREDIENTS_KEY}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        return response.json();
+      })
+      .then((data) => {
+        const ingredientInfo = data.items.map(
+          ({
+            _uuid,
+            ingredientName,
+            ingredientCountry,
+            ingredientCream,
+            ingredientDescription,
+            ingredientFlavor,
+            ingredientPrice,
+            ingredientStrength,
+          }) => ({
+            uuid: _uuid,
+            name: ingredientName,
+            country: ingredientCountry,
+            cream: ingredientCream,
+            description: ingredientDescription,
+            flavor: ingredientFlavor,
+            price: ingredientPrice,
+            strength: ingredientStrength,
+          })
+        );
+        let correctObj = ingredientInfo.find((e) => e.uuid === id);
+        setCurrentData(correctObj);
+        setIngredientPrice(correctObj?.price);
+      })
+      .finally(() => setIsLoaded(true));
+  };
+  useEffect(() => {
+    getCorrectInfo();
+  }, []);
+
   const navigate = useNavigate();
   const [ingredientPriceInfo, setIngredientPriceInfo] = useState([
     { type: "default", title: "Ingredient Price", price: ingredientPrice },
@@ -31,16 +80,12 @@ const CreateIngredient = () => {
       (e) => e.type !== "Flavor"
     );
     setIngredientPriceInfo([...removeOldFlavor, e]);
-
-    console.log(e);
   };
   const changeCream = (e) => {
     const removeOldCream = ingredientPriceInfo.filter(
       (e) => e.type !== "Cream"
     );
     setIngredientPriceInfo([...removeOldCream, e]);
-
-    console.log(e);
   };
   useEffect(() => {
     let totalPrice = 0;
@@ -73,13 +118,13 @@ const CreateIngredient = () => {
       ingredientFlavor: flavorRef.current.value,
       ingredientStrength: strengthRef.current.value,
     };
-    fetch(`${API_URL}/ingredients`, {
-      method: "POST",
+    fetch(`${API_URL}/${id ? `ingredients/${id}` : "ingredients"}`, {
+      method: `${id ? "PUT" : "POST"}`,
       headers: {
         Authorization: `Bearer ${API_INGREDIENTS_KEY}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify([newTask]), // Ensure correct JSON format
+      body: JSON.stringify(id ? newTask : [newTask]),
     })
       .then((response) => {
         if (!response.ok) {
@@ -92,67 +137,35 @@ const CreateIngredient = () => {
       })
       .catch((error) => console.error("Error:", error));
   };
+
   return (
     <div className={styles.create_main}>
       <div className={styles.add_product_main}>
-        <h1>Create Ingredient</h1>
+        <h1>{id ? "Edit" : "Create"} Ingredient</h1>
         <div className={styles.create_div_container}>
-          <form className={styles.create_form}>
-            <div className={styles.inputs_flex}>
-              <div className={styles.flex_div}>
-                <label>
-                  <h2>Ingredient Name</h2>
-                  <input type="text" ref={nameRef} />
-                </label>
-                <label>
-                  <h2>Flvor Type</h2>
-                  <FlavorSelectIngredient
-                    ref={flavorRef}
-                    changeFlavor={changeFlavor}
-                  />
-                </label>
-
-                <label>
-                  <h2>Strength</h2>
-                  <input type="text" ref={strengthRef} />
-                </label>
-              </div>
-              <div className={styles.flex_div}>
-                <label>
-                  <h2>Ingredient Price </h2>
-                  <input
-                    type="number"
-                    value={ingredientPrice || ""}
-                    onChange={(e) => setIngredientPrice(e.target.value)}
-                    min={0}
-                  />
-                </label>
-                <label className={styles.textarea_label}>
-                  <h2>Description </h2>
-                  <textarea ref={descriptionRef} />
-                </label>
-              </div>
+          {isLoaded ? (
+            <IngredientForm
+              nameRef={nameRef}
+              countryRef={countryRef}
+              currentData={currentData}
+              flavorRef={flavorRef}
+              changeFlavor={changeFlavor}
+              id={id}
+              strengthRef={strengthRef}
+              ingredientPrice={ingredientPrice}
+              descriptionRef={descriptionRef}
+              changeCream={changeCream}
+              creamRef={creamRef}
+              totalPrice={totalPrice}
+              addIngredient={addIngredient}
+              setIngredientPrice={setIngredientPrice}
+            />
+          ) : (
+            <div className={styles.loader}>
+              {" "}
+              <InfinitySpin color="royalblue" />
             </div>
-            <div className={styles.info_bottom_flex}>
-              <label>
-                <h2>Select Country</h2>
-                <CountrySelect ref={countryRef} />
-              </label>
-              <label>
-                <h2>Select Creams & Toppings </h2>
-                <CreamSelect changeCream={changeCream} ref={creamRef} />
-              </label>
-            </div>
-
-            <div className={styles.total_price}>
-              <p>Total Price :</p>
-              <p className={styles.price}>{totalPrice}$</p>
-            </div>
-
-            <div className={styles.add_button}>
-              <BlueButton title={"Add Ingredient"} func={addIngredient} />
-            </div>
-          </form>
+          )}
         </div>
       </div>
     </div>

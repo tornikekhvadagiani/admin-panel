@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import styles from "./CreateProducts.module.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import AddIngredients from "../../components/AddIngredients";
 import { useMyContext } from "../../context/Context";
 import CreateForm from "./CreateForm";
@@ -24,6 +24,8 @@ const CreateProducts = () => {
   const context = useMyContext();
   const { API_COFFE_KEY, API_URL } = useMyContext();
   const [totalPrice, setTotalPrice] = useState(0);
+  const { id } = useParams();
+  const [currentData, setCurrentData] = useState();
 
   useEffect(() => {
     let totalPrice = 0;
