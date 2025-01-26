@@ -65,7 +65,7 @@ const CreateCoffe = () => {
 
     const newTask = {
       coffeType: typeRef.current.value,
-      coffePrice: coffePrice, // Dollar price
+      coffePrice: totalPrice, // Dollar price
       coffeGelPrice: gelAmount, // GEL price
       coffeSugar: sugarRef.current.value,
       coffeine: coffeineRef.current.value,

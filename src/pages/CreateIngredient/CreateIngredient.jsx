@@ -147,6 +147,7 @@ const CreateIngredient = () => {
       .catch((error) => console.error("Error:", error));
   };
 
+
   return (
     <div className={styles.create_main}>
       <div className={styles.add_product_main}>
