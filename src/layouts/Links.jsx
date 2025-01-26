@@ -1,18 +1,23 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Navbar.module.css";
 import { LinksAPI } from "../API/LinksAPI";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useMyContext } from "../context/Context";
 
 const Links = () => {
   const { setIngredientsPopup } = useMyContext();
   const currentLocation = useLocation();
   const [activeLink, setActiveLink] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const matchingLink = LinksAPI.find((e) =>
       currentLocation.pathname.includes(e.linkTo)
     );
+    if (currentLocation.pathname == "/") {
+      navigate("/Products/coffe");
+    }
+
     if (matchingLink) {
       setActiveLink(matchingLink.id);
     }

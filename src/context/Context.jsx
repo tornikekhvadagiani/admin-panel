@@ -8,9 +8,7 @@ export const MyContextProvider = ({ children }) => {
     "pa7mgdUf7LYSHtAsd1XWzhVn13700_re6sLHeJDWB8nLasJfRQ";
   const API_URL = "https://crudapi.co.uk/api/v1";
 
-  const [isLoaded, setIsLoaded] = useState(false);
- 
-  const [ingredientsPopup, setIngredientsPopup] = useState(false);
+  const [ingredientsPopup, setIngredientsPopup] = useState(true);
 
   return (
     <MyContext.Provider
@@ -18,8 +16,6 @@ export const MyContextProvider = ({ children }) => {
         API_COFFE_KEY,
         API_URL,
         API_INGREDIENTS_KEY,
-        isLoaded,
-        setIsLoaded,
         ingredientsPopup,
         setIngredientsPopup,
       }}

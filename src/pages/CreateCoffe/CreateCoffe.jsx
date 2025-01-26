@@ -28,13 +28,15 @@ const CreateCoffe = () => {
   const { id } = useParams();
   const [currentData, setCurrentData] = useState();
   const [isLoaded, setIsLoaded] = useState(id ? false : true);
+  const [addedIngredients, setAddedIngredients] = useState([]);
 
   useEffect(() => {
     let totalPrice = 0;
-    coffePriceInfo.forEach((e) => (totalPrice += e.price));
+    coffePriceInfo?.forEach((e) => (totalPrice += Number(e.price)));
+    addedIngredients?.forEach((e) => (totalPrice += Number(e.price)));
     const validCoffePrice = Number(coffePrice) || 0;
     setTotalPrice((totalPrice + validCoffePrice).toFixed(2));
-  }, [coffePrice, coffePriceInfo]);
+  }, [coffePrice, coffePriceInfo, addedIngredients]);
 
   const addMoreIngredient = () => {};
 
@@ -61,7 +63,6 @@ const CreateCoffe = () => {
       return;
     }
 
-    // Proceed with the newTask
     const newTask = {
       coffeType: typeRef.current.value,
       coffePrice: coffePrice, // Dollar price
@@ -71,6 +72,7 @@ const CreateCoffe = () => {
       coffeDescription: descriptionRef.current.value,
       coffeCountry: countryRef.current.value,
       coffeFlavor: flavorRef.current.value,
+      coffeIngredients: addedIngredients,
     };
     fetch(`${API_URL}/${currentData ? `coffe/${id}` : "coffe"}`, {
       method: currentData ? "PUT" : "POST",
@@ -124,6 +126,7 @@ const CreateCoffe = () => {
             coffeFlavor,
             coffePrice,
             coffeSugar,
+            coffeIngredients,
           }) => ({
             uuid: _uuid,
             type: coffeType,
@@ -133,11 +136,14 @@ const CreateCoffe = () => {
             flavor: coffeFlavor,
             price: coffePrice,
             sugar: coffeSugar,
+            ingredients: coffeIngredients,
           })
         );
         let correctObj = coffeInfo.find((e) => e.uuid === id);
         setCurrentData(correctObj);
         setCoffePrice(correctObj?.price);
+        setAddedIngredients(correctObj?.ingredients);
+        console.log(correctObj);
       })
       .finally(() => setIsLoaded(true));
   };
@@ -145,6 +151,7 @@ const CreateCoffe = () => {
     getCorrectInfo();
   }, []);
   const changeFlavor = (newFlavor) => {
+    if (!coffePriceInfo) return;
     const removeCurrentFlavor = coffePriceInfo.filter(
       (e) => e.type !== "createFlavor"
     );
@@ -154,7 +161,12 @@ const CreateCoffe = () => {
 
   return (
     <div className={styles.create_main}>
-      {context.ingredientsPopup && <AddIngredients />}
+      <AddIngredients
+        addedIngredients={addedIngredients}
+        setAddedIngredients={setAddedIngredients}
+        isEditing={id}
+        currentData={currentData}
+      />
       <div className={styles.add_product_main}>
         <h1>{id ? "Edit Coffe" : "Add Coffe"}</h1>
         <div className={styles.create_div_container}>
