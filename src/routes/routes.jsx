@@ -2,6 +2,7 @@ import NavbarLayout from "../layouts/NavbarLayout";
 import CreateIngredient from "../pages/CreateIngredient/CreateIngredient";
 import CreateCoffe from "../pages/CreateCoffe/CreateCoffe";
 import ManageProducts from "../pages/ManageProducts/ManageProducts";
+import NotFound from "../pages/NotFound";
 
 const router = [
   {
@@ -32,6 +33,10 @@ const router = [
       {
         path: "/CreateCoffe/:id",
         element: <CreateCoffe />,
+      },
+      {
+        path: "*",
+        element: <NotFound />,
       },
     ],
   },

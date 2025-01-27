@@ -10,7 +10,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 const ManageProducts = () => {
   const [data, setData] = useState(null);
   const { API_URL, API_INGREDIENTS_KEY, API_COFFE_KEY } = useMyContext();
-
   const [isLoaded, setIsLoaded] = useState(true);
   const { pathFetchType } = useParams();
   const [valuteSwitchIds, setValueSwitchIds] = useState([]);
@@ -87,6 +86,11 @@ const ManageProducts = () => {
       .finally(() => setIsLoaded(true));
   };
   useEffect(() => {
+    console.log(pathFetchType);
+
+    if (pathFetchType !== "coffe" && pathFetchType !== "ingredients") {
+      navigate("/Type-Not-Found");
+    }
     fetchData();
   }, [pathFetchType]);
 
@@ -105,10 +109,7 @@ const ManageProducts = () => {
     <div className={styles.manage_main}>
       <div className={styles.manage_box}>
         <div className={styles.manage_header_flex}>
-          <h1>
-            Manage {pathFetchType[0].toUpperCase()}
-            {pathFetchType.slice(1)}
-          </h1>
+          <h1>Manage {pathFetchType}</h1>
           <div>
             <BlueButton
               title={"Show Coffes"}
@@ -123,89 +124,104 @@ const ManageProducts = () => {
 
         <div className={styles.create_div_container}>
           {isLoaded ? (
-            <div className={styles.manage_list_main}>
-              <div className={`${styles.list} ${styles.list_top}`}>
-                <div className={styles.option}>
-                  <InfoType
-                    fetchType={pathFetchType}
-                    ingredientValue={"Ingredient Name"}
-                    coffeValue={"Coffe Type"}
-                  />
+            data?.length ? (
+              <div className={styles.manage_list_main}>
+                <div className={`${styles.list} ${styles.list_top}`}>
+                  <div className={styles.option}>
+                    <InfoType
+                      fetchType={pathFetchType}
+                      ingredientValue={"Ingredient Name"}
+                      coffeValue={"Coffe Type"}
+                    />
+                  </div>
+                  <div className={styles.option}>
+                    <InfoType
+                      fetchType={pathFetchType}
+                      ingredientValue={"Ingredient Country"}
+                      coffeValue={"Coffe Country"}
+                    />
+                  </div>
+                  <div className={styles.option}>
+                    <InfoType
+                      fetchType={pathFetchType}
+                      ingredientValue={"Ingredient Flavor"}
+                      coffeValue={"Coffe Flavor"}
+                    />
+                  </div>
+                  <div className={styles.option}>
+                    <InfoType
+                      fetchType={pathFetchType}
+                      ingredientValue={"Ingredient Cream"}
+                      coffeValue={"Coffeine"}
+                    />
+                  </div>
+                  <div className={styles.option}>
+                    <InfoType
+                      fetchType={pathFetchType}
+                      ingredientValue={"Ingredient Price"}
+                      coffeValue={"Coffe Price"}
+                    />
+                  </div>
                 </div>
-                <div className={styles.option}>
-                  <InfoType
-                    fetchType={pathFetchType}
-                    ingredientValue={"Ingredient Country"}
-                    coffeValue={"Coffe Country"}
-                  />
-                </div>
-                <div className={styles.option}>
-                  <InfoType
-                    fetchType={pathFetchType}
-                    ingredientValue={"Ingredient Flavor"}
-                    coffeValue={"Coffe Flavor"}
-                  />
-                </div>
-                <div className={styles.option}>
-                  <InfoType
-                    fetchType={pathFetchType}
-                    ingredientValue={"Ingredient Cream"}
-                    coffeValue={"Coffeine"}
-                  />
-                </div>
-                <div className={styles.option}>
-                  <InfoType
-                    fetchType={pathFetchType}
-                    ingredientValue={"Ingredient Price"}
-                    coffeValue={"Coffe Price"}
-                  />
-                </div>
-              </div>
 
-              {data?.map((e, i) => (
-                <div className={`${styles.list} `} key={randn()}>
-                  <div className={styles.option}>
-                    <InfoType
-                      fetchType={pathFetchType}
-                      ingredientValue={data[i].name}
-                      coffeValue={data[i].type}
-                    />
-                  </div>
-                  <div className={styles.option}>{data[i].country}</div>
-                  <div className={styles.option}>{data[i].flavor}</div>
-                  <div className={styles.option}>
-                    <InfoType
-                      fetchType={pathFetchType}
-                      ingredientValue={data[i].cream}
-                      coffeValue={data[i].coffeine}
-                    />
-                  </div>
-                  <div
-                    className={`${styles.option} ${styles.price}`}
-                    style={{ color: "limegreen" }}
-                    onClick={() => switchValute(e)}
-                  >
-                    <p>
-                      {valuteSwitchIds.includes(e.uuid)
-                        ? `${e.gelPrice}₾`
-                        : `${e.price}$`}
-                    </p>
-                  </div>
-                  <div className={styles.edit}>
-                    <Link
-                      to={`/${
-                        pathFetchType == "ingredients"
-                          ? "CreateIngredient"
-                          : "CreateCoffe"
-                      }/${e.uuid}`}
+                {data?.map((e, i) => (
+                  <div className={`${styles.list} `} key={randn()}>
+                    <div className={styles.option}>
+                      <InfoType
+                        fetchType={pathFetchType}
+                        ingredientValue={data[i].name}
+                        coffeValue={data[i].type}
+                      />
+                    </div>
+                    <div className={styles.option}>{data[i].country}</div>
+                    <div className={styles.option}>{data[i].flavor}</div>
+                    <div className={styles.option}>
+                      <InfoType
+                        fetchType={pathFetchType}
+                        ingredientValue={data[i].cream}
+                        coffeValue={data[i].coffeine}
+                      />
+                    </div>
+                    <div
+                      className={`${styles.option} ${styles.price}`}
+                      style={{ color: "limegreen" }}
+                      onClick={() => switchValute(e)}
                     >
-                      Edit
-                    </Link>
+                      <p>
+                        {valuteSwitchIds.includes(e.uuid)
+                          ? `${e.gelPrice}₾`
+                          : `${e.price}$`}
+                      </p>
+                    </div>
+                    <div className={styles.edit}>
+                      <Link
+                        to={`/${
+                          pathFetchType == "ingredients"
+                            ? "CreateIngredient"
+                            : "CreateCoffe"
+                        }/${e.uuid}`}
+                      >
+                        Edit
+                      </Link>
+                    </div>
+                    <div className={styles.index}>{i + 1}</div>
                   </div>
-                  <div className={styles.index}>{i + 1}</div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className={styles.data_not_found}>
+                <p>{pathFetchType} not created </p>
+                <Link
+                  to={
+                    pathFetchType === "coffe"
+                      ? "/CreateCoffe"
+                      : "/CreateIngredient"
+                  }
+                >
+                  Create {pathFetchType}
+                </Link>
+              </div>
+            )
           ) : (
             <div className={styles.loader}>
               <InfinitySpin color="royalblue" />

@@ -3,7 +3,7 @@
 }
 .nav {
   background-color: #111111;
-  width: 350px;
+  min-width: 350px;
   min-height: 100dvh;
   padding: 30px;
   color: white;
