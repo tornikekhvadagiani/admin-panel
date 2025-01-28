@@ -1,11 +1,9 @@
-import './App.css'
+import { createBrowserRouter, RouterProvider } from "react-router-dom"; // Correctly import createBrowserRouter
+import router from "./routes/routes";
+import "./App.css";
 
-function App() {
+const App = () => {
+  return <RouterProvider router={createBrowserRouter(router)} />;
+};
 
-
-  return (
-    <div>admin-panel</div>
-  )
-}
-
-export default App
+export default App;

@@ -1,0 +1,27 @@
+.notfound_main {
+  background-color: rgba(128, 128, 128, 0.278);
+  width: 100%;
+  position: relative;
+  padding: 20px;
+}
+.notfound_container {
+  background-color: white;
+  min-height: 90dvh;
+  padding: 100px;
+  margin-top: 30px;
+}
+.notfound_box {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 30px;
+}
+.notfound_box h1 {
+  font-size: 50px;
+}
+.notfound_box a {
+  color: black;
+  font-size: 25px;
+}

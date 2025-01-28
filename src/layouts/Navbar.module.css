@@ -1,0 +1,43 @@
+.dashboard_flex {
+  display: flex;
+}
+.nav {
+  background-color: #111111;
+  min-width: 350px;
+  min-height: 100dvh;
+  padding: 30px;
+  color: white;
+}
+.nav h1 {
+  font-size: 24px;
+  font-weight: 400;
+  margin-bottom: 50px;
+}
+
+.link {
+  text-decoration: none;
+  color: #fff;
+  display: flex;
+  gap: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+  transition: all 0.3s ease-in-out;
+  background-color: transparent;
+}
+/* .link:hover {
+  background-color: rgba(128, 128, 128, 0.275);
+}
+.activeLink:hover {
+  background-color: #598eda;
+} */
+.activeLink {
+  background-color: #598eda;
+}
+.link h3 {
+  font-size: 16px;
+}
+.link img {
+  width: 20px;
+}
